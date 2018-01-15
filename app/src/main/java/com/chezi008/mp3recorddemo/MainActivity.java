@@ -6,9 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-
-import com.czt.mp3recorder.MP3Recorder;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
-    //    private MP3Recorder mRecorder = new MP3Recorder(new File(Environment.getExternalStorageDirectory(),"test.mp3"));
     private CzAudioRecord mRecorder;
     private String filePath= Environment.getExternalStorageDirectory().getPath() + "/test.mp3";
 
