@@ -10,6 +10,7 @@ public interface CzAudioRecord {
     void setAudioPath(String filePath);
     void setAudioListener(AudioRecordListener audioListener);
     void startRecord();
-    void pauseRecord();
+    void onPause();
+    void onResume();
     void stopRecord();
 }

@@ -23,13 +23,15 @@ public class MainActivity extends AppCompatActivity {
 
     //    private MP3Recorder mRecorder = new MP3Recorder(new File(Environment.getExternalStorageDirectory(),"test.mp3"));
     private CzAudioRecord mRecorder;
+    private String filePath= Environment.getExternalStorageDirectory().getPath() + "/test.mp3";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        createFile();
         mRecorder = new Mp3Record();
-        mRecorder.setAudioPath(Environment.getExternalStorageDirectory().getPath() + "/test.mp3");
+        mRecorder.setAudioPath(filePath);
         mRecorder.setAudioListener(new AudioRecordListener() {
             @Override
             public void onGetVolume(int volume) {
@@ -50,6 +52,31 @@ public class MainActivity extends AppCompatActivity {
                 mRecorder.stopRecord();
             }
         });
+        Button btnPause = findViewById(R.id.btn_pause);
+        btnPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRecorder.onPause();
+            }
+        });
+        Button btnResume = findViewById(R.id.btn_resume);
+        btnResume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRecorder.onResume();
+            }
+        });
+    }
+
+    private void createFile() {
+        File file = new File(filePath);
+        if (!file.exists()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

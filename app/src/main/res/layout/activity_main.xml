@@ -23,6 +23,25 @@
             android:layout_weight="1"
             android:text="Stop" />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_pause"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="pasuseRecord" />
+
+        <Button
+            android:id="@+id/btn_resume"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="resume" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/StatusTextView"

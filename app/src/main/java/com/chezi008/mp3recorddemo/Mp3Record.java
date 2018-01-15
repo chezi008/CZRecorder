@@ -6,15 +6,14 @@ import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.HandlerThread;
 
-import com.czt.mp3recorder.DataEncodeThread;
 import com.czt.mp3recorder.PCMFormat;
 import com.czt.mp3recorder.util.LameUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -60,10 +59,11 @@ public class Mp3Record implements CzAudioRecord {
     private AudioRecord mAudioRecord = null;
     private int mBufferSize;
     private short[] mPCMBuffer;
-    private DataEncodeThread mEncodeThread;
-    private boolean mIsRecording = false;
+    private boolean mIsRecording;
     private File mRecordFile;
 
+    private HandlerThread mChildHandlerThread;
+    private Handler mChiHandler;
 
     private static final int CORE_POOL_SIZE = 1;
     private static final int MAXIMUM_POOL_SIZE = 2;
@@ -74,6 +74,9 @@ public class Mp3Record implements CzAudioRecord {
     private ThreadPoolExecutor mThreadPoolExecutor;
 
     private AudioRecordListener mAudioRecordListener;
+
+    private byte[] mMp3Buffer;
+    private FileOutputStream mFileOutputStream;
 
     @Override
     public void setAudioPath(String filePath) {
@@ -90,17 +93,32 @@ public class Mp3Record implements CzAudioRecord {
         if(!mRecordFile.exists()){
             throw new IllegalArgumentException("录音保存文件的地址不存在！");
         }
+        try {
+            mFileOutputStream = new FileOutputStream(mRecordFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
         if (mIsRecording) {
             return;
         }
         // 提早，防止init或startRecording被多次调用
         mIsRecording = true;
-
+        initChildHandler();
         initAudioRecord();
         mAudioRecord.startRecording();
         initMp3Lame();
         initRunable();
         mThreadPoolExecutor.execute(recordAudioRunable);
+    }
+
+    private void initChildHandler() {
+        if(mChildHandlerThread==null){
+            mChildHandlerThread = new HandlerThread("converMp3Thread");
+            mChildHandlerThread.start();
+
+            mChiHandler = new Handler(mChildHandlerThread.getLooper());
+        }
     }
 
     private void initRunable() {
@@ -116,17 +134,14 @@ public class Mp3Record implements CzAudioRecord {
                     while (mIsRecording) {
                         int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
                         if (readSize > 0) {
-                            mEncodeThread.addTask(mPCMBuffer, readSize);
+                            processData(mPCMBuffer,readSize);
                             calculateRealVolume(mPCMBuffer, readSize);
                         }
                     }
                     // release and finalize audioRecord
-                    mAudioRecord.stop();
                     mAudioRecord.release();
                     mAudioRecord = null;
-                    // stop the encoding thread and try to wait
-                    // until the thread finishes its job
-                    mEncodeThread.sendStopMessage();
+
                 }
             };
         }
@@ -139,18 +154,8 @@ public class Mp3Record implements CzAudioRecord {
 		 * The bit rate is 32kbps
 		 *
 		 */
-        LameUtil.init(DEFAULT_SAMPLING_RATE, DEFAULT_LAME_IN_CHANNEL, DEFAULT_SAMPLING_RATE, DEFAULT_LAME_MP3_BIT_RATE, DEFAULT_LAME_MP3_QUALITY);
-        // Create and run thread used to encode data
-        // The thread will
-        try {
-            mEncodeThread = new DataEncodeThread(mRecordFile, mBufferSize);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        mEncodeThread.start();
-        mAudioRecord.setRecordPositionUpdateListener(mEncodeThread, mEncodeThread.getHandler());
-        mAudioRecord.setPositionNotificationPeriod(FRAME_COUNT);
-
+        LameUtil.init(DEFAULT_SAMPLING_RATE, DEFAULT_LAME_IN_CHANNEL,
+                DEFAULT_SAMPLING_RATE, DEFAULT_LAME_MP3_BIT_RATE, DEFAULT_LAME_MP3_QUALITY);
     }
 
     /**
@@ -159,7 +164,6 @@ public class Mp3Record implements CzAudioRecord {
     private void initAudioRecord() {
         mBufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLING_RATE,
                 DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT.getAudioFormat());
-
 
         int bytesPerFrame = DEFAULT_AUDIO_FORMAT.getBytesPerFrame();
 		/* Get number of samples. Calculate the buffer size
@@ -172,22 +176,43 @@ public class Mp3Record implements CzAudioRecord {
             mBufferSize = frameSize * bytesPerFrame;
         }
 
+        mMp3Buffer = new byte[(int) (7200 + (mBufferSize * 2 * 1.25))];
+
 		/* Setup audio recorder */
         mAudioRecord = new AudioRecord(DEFAULT_AUDIO_SOURCE,
                 DEFAULT_SAMPLING_RATE, DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT.getAudioFormat(),
                 mBufferSize);
 
         mPCMBuffer = new short[mBufferSize];
+
+        mAudioRecord.setRecordPositionUpdateListener(new AudioRecord.OnRecordPositionUpdateListener() {
+            @Override
+            public void onMarkerReached(AudioRecord recorder) {
+                //do nothin
+            }
+
+            @Override
+            public void onPeriodicNotification(AudioRecord recorder) {
+
+            }
+        }, mChiHandler);
+        mAudioRecord.setPositionNotificationPeriod(FRAME_COUNT);
     }
 
     @Override
-    public void pauseRecord() {
+    public void onPause() {
+        mAudioRecord.stop();
+    }
 
+    @Override
+    public void onResume() {
+        mAudioRecord.startRecording();
     }
 
     @Override
     public void stopRecord() {
         mIsRecording = false;
+        flushAndRelease();
     }
     /**
      * 此计算方法来自samsung开发范例
@@ -206,6 +231,45 @@ public class Mp3Record implements CzAudioRecord {
             int volume = (int) Math.sqrt(amplitude);
             if(mAudioRecordListener!=null){
                 mAudioRecordListener.onGetVolume(volume);
+            }
+        }
+    }
+    /**
+     * 从缓冲区中读取并处理数据，使用lame编码MP3
+     * @return  从缓冲区中读取的数据的长度
+     * 			缓冲区中没有数据时返回0
+     */
+    private int processData(short[] rawData, int readSize) {
+        int encodedSize = LameUtil.encode(rawData, rawData, readSize, mMp3Buffer);
+        if (encodedSize > 0){
+            try {
+                mFileOutputStream.write(mMp3Buffer, 0, encodedSize);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return readSize;
+    }
+    /**
+     * Flush all data left in lame buffer to file
+     */
+    private void flushAndRelease() {
+        //将MP3结尾信息写入buffer中
+        final int flushResult = LameUtil.flush(mMp3Buffer);
+        if (flushResult > 0) {
+            try {
+                mFileOutputStream.write(mMp3Buffer, 0, flushResult);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally{
+                if (mFileOutputStream != null) {
+                    try {
+                        mFileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                LameUtil.close();
             }
         }
     }
