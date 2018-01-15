@@ -10,12 +10,13 @@ import java.io.File;
 import java.io.IOException;
 
 public class MP3Recorder {
-	//=======================AudioRecord Default Settings=======================
+	//=======================CzAudioRecord Default Settings=======================
 	private static final int DEFAULT_AUDIO_SOURCE = MediaRecorder.AudioSource.MIC;
 	/**
 	 * 以下三项为默认配置参数。Google Android文档明确表明只有以下3个参数是可以在所有设备上保证支持的。
 	 */
-	private static final int DEFAULT_SAMPLING_RATE = 44100;//模拟器仅支持从麦克风输入8kHz采样率
+	//模拟器仅支持从麦克风输入8kHz采样率
+	private static final int DEFAULT_SAMPLING_RATE = 44100;
 	private static final int DEFAULT_CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
 	/**
 	 * 下面是对此的封装
@@ -72,7 +73,8 @@ public class MP3Recorder {
 		if (mIsRecording) {
 			return;
 		}
-		mIsRecording = true; // 提早，防止init或startRecording被多次调用
+		// 提早，防止init或startRecording被多次调用
+		mIsRecording = true;
 	    initAudioRecorder();
 		mAudioRecord.startRecording();
 		new Thread() {

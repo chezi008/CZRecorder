@@ -15,7 +15,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+/**
+ * @description ：数据转换的线程
+ * @author ：chezi008 on 2018/1/15 16:55
+ * @email ：chezi008@qq.com
+ */
 public class DataEncodeThread extends HandlerThread implements AudioRecord.OnRecordPositionUpdateListener {
 	private StopHandler mHandler;
 	private static final int PROCESS_STOP = 1;
