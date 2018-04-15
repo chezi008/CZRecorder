@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.module.mp3recorddemo.R;
@@ -17,13 +18,17 @@ import com.module.mp3recorder.utils.DensityUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author ：chezi008 on 2018/4/15 16:30
- * @description ：频谱视图
+ * @description ：频谱视图,借用https://www.jianshu.com/p/76aceacbc243。优化改善
  * @email ：chezi008@163.com
  */
-public class SpectrumView extends View{
+public class SpectrumView extends View {
+    private String TAG = getClass().getSimpleName();
+
     //画笔
     private Paint paint;
 
@@ -47,13 +52,14 @@ public class SpectrumView extends View{
     private int pointerColor = Color.RED;
 
     //控制开始/停止
-    private boolean isPlaying = false;
+    private boolean isPlaying;
 
-    //子线程
-    private Thread myThread;
 
     //指针波动速率
     private int pointerSpeed;
+
+    private Runnable mAnimationRunnable;
+    private ExecutorService mExecutorService;
 
 
     public SpectrumView(Context context) {
@@ -63,15 +69,14 @@ public class SpectrumView extends View{
 
     public SpectrumView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        initAttrs(context,attrs);
+        initAttrs(context, attrs);
         init();
     }
 
 
-
     public SpectrumView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initAttrs(context,attrs);
+        initAttrs(context, attrs);
         init();
     }
 
@@ -82,8 +87,7 @@ public class SpectrumView extends View{
         //指针的数量，默认为4
         pointerNum = ta.getInt(R.styleable.SpectrumView_rectangle_num, 4);
         //指针的宽度，默认5dp
-        pointerWidth = DensityUtils.dp2px(getContext(),
-                ta.getFloat(R.styleable.SpectrumView_rectangle_width, 5f));
+        pointerWidth = ta.getDimension(R.styleable.SpectrumView_rectangle_width,5f);
         pointerSpeed = ta.getInt(R.styleable.SpectrumView_rectangle_speed, 40);
     }
 
@@ -95,6 +99,33 @@ public class SpectrumView extends View{
         paint.setAntiAlias(true);
         paint.setColor(pointerColor);
         pointers = new ArrayList<>();
+
+        mExecutorService = Executors.newSingleThreadExecutor();
+        mAnimationRunnable = new Runnable() {
+            @Override
+            public void run() {
+                float i = 0;
+                while (isPlaying) {
+                    try {
+                        //循环改变每个指针高度
+                        for (int j = 0; j < pointers.size(); j++) {
+                            //利用正弦有规律的获取0~1的数。
+                            float rate = (float) Math.abs(Math.sin(i + j));
+                            Log.d(TAG, "run: i:"+i);
+                            //rate 乘以 可绘制高度，来改变每个指针的高度
+                            pointers.get(j).setHeight((basePointY - getPaddingTop()) * rate);
+                        }
+                        //休眠一下下，可自行调节
+                        Thread.sleep(pointerSpeed);
+                        //控制开始/暂停
+                        myHandler.sendEmptyMessage(0);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    i += 0.1;
+                }
+            }
+        };
     }
 
 
@@ -151,13 +182,9 @@ public class SpectrumView extends View{
      */
     public void start() {
         if (!isPlaying) {
-            if (myThread == null) {
-                //开启子线程
-                myThread = new Thread(new MyRunnable());
-                myThread.start();
-            }
             //控制子线程中的循环
             isPlaying = true;
+            mExecutorService.submit(mAnimationRunnable);
         }
     }
 
@@ -179,38 +206,6 @@ public class SpectrumView extends View{
             invalidate();
         }
     };
-
-    /**
-     * 子线程，循环改变每个指针的高度
-     */
-    public class MyRunnable implements Runnable {
-
-        @Override
-        public void run() {
-
-            for (float i = 0; i < Integer.MAX_VALUE; ) {
-                //创建一个死循环，每循环一次i+0.1
-                try {
-                    //循环改变每个指针高度
-                    for (int j = 0; j < pointers.size(); j++) {
-                        //利用正弦有规律的获取0~1的数。
-                        float rate = (float) Math.abs(Math.sin(i + j));
-                        //rate 乘以 可绘制高度，来改变每个指针的高度
-                        pointers.get(j).setHeight((basePointY - getPaddingTop()) * rate);
-                    }
-                    //休眠一下下，可自行调节
-                    Thread.sleep(pointerSpeed);
-                    if (isPlaying) {
-                        //控制开始/暂停
-                        myHandler.sendEmptyMessage(0);
-                        i += 0.1;
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
 
     /**

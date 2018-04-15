@@ -11,6 +11,7 @@ import com.module.mp3recorddemo.R;
 import com.module.mp3recorder.audio.CzAudioRecord;
 import com.module.mp3recorder.audio.Mp3Record;
 import com.module.mp3recorder.listener.AudioRecordListener;
+import com.module.mp3recorder.widget.SpectrumView;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private CzAudioRecord mRecorder;
     private String filePath= Environment.getExternalStorageDirectory().getPath() + "/test.mp3";
+    private SpectrumView spectrum_view;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mRecorder.startRecord();
+                spectrum_view.start();
             }
         });
         Button stopButton = (Button) findViewById(R.id.StopButton);
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mRecorder.stopRecord();
+                spectrum_view.stop();
             }
         });
         Button btnPause = findViewById(R.id.btn_pause);
@@ -67,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
                 mRecorder.onResume();
             }
         });
+
+        spectrum_view = findViewById(R.id.spectrum_view);
     }
 
     private void createFile() {

@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -24,6 +25,7 @@
             android:text="Stop" />
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/ll_resume"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
@@ -46,6 +48,12 @@
     <TextView
         android:id="@+id/StatusTextView"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent" />
-
+        android:layout_height="wrap_content" />
+    <com.module.mp3recorder.widget.SpectrumView
+        android:id="@+id/spectrum_view"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        app:rectangle_color="#FF6565"
+        app:rectangle_width="5dp"
+        app:rectangle_num="10"/>
 </LinearLayout>
