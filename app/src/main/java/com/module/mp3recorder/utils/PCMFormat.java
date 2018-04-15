@@ -1,4 +1,4 @@
-package com.czt.mp3recorder;
+package com.module.mp3recorder.utils;
 
 import android.media.AudioFormat;
 

@@ -1,4 +1,4 @@
-package com.chezi008.mp3recorddemo;
+package com.module.mp3recorder;
 
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -6,6 +6,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import com.module.mp3recorddemo.R;
+import com.module.mp3recorder.audio.CzAudioRecord;
+import com.module.mp3recorder.audio.Mp3Record;
+import com.module.mp3recorder.listener.AudioRecordListener;
 
 import java.io.File;
 import java.io.IOException;

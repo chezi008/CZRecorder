@@ -1,4 +1,4 @@
-package com.chezi008.mp3recorddemo;
+package com.module.mp3recorder.audio;
 
 /**
  * @author ：chezi008 on 2018/1/15 16:34

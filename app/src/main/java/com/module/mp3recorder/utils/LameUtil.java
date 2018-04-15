@@ -1,8 +1,8 @@
-package com.czt.mp3recorder.util;
+package com.module.mp3recorder.utils;
 
 public class LameUtil {
 	static{
-		System.loadLibrary("mp3lame");
+		System.loadLibrary("native-lib");
 	}
 
 	/**

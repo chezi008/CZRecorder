@@ -1,4 +1,4 @@
-package com.chezi008.mp3recorddemo;
+package com.module.mp3recorddemo;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

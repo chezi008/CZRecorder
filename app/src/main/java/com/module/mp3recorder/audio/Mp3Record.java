@@ -1,4 +1,4 @@
-package com.chezi008.mp3recorddemo;
+package com.module.mp3recorder.audio;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -6,8 +6,9 @@ import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.HandlerThread;
 
-import com.czt.mp3recorder.PCMFormat;
-import com.czt.mp3recorder.util.LameUtil;
+import com.module.mp3recorder.listener.AudioRecordListener;
+import com.module.mp3recorder.utils.PCMFormat;
+import com.module.mp3recorder.utils.LameUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
