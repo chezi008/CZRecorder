@@ -11,6 +11,7 @@ import com.module.mp3recorddemo.R;
 import com.module.mp3recorder.audio.CzAudioRecord;
 import com.module.mp3recorder.audio.Mp3Record;
 import com.module.mp3recorder.listener.AudioRecordListener;
+import com.module.mp3recorder.widget.DoughnutProgress;
 import com.module.mp3recorder.widget.SpectrumView;
 
 import java.io.File;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private CzAudioRecord mRecorder;
     private String filePath= Environment.getExternalStorageDirectory().getPath() + "/test.mp3";
     private SpectrumView spectrum_view;
+    private DoughnutProgress doughnut_progress;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mRecorder.startRecord();
                 spectrum_view.start();
+                doughnut_progress.startAnimation();
             }
         });
         Button stopButton = (Button) findViewById(R.id.StopButton);
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mRecorder.stopRecord();
                 spectrum_view.stop();
+                doughnut_progress.stopAnimation();
             }
         });
         Button btnPause = findViewById(R.id.btn_pause);
@@ -73,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         spectrum_view = findViewById(R.id.spectrum_view);
+        doughnut_progress = findViewById(R.id.doughnut_progress);
     }
 
     private void createFile() {
