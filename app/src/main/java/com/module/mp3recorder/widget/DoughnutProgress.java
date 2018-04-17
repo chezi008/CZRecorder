@@ -7,12 +7,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.SweepGradient;
 import android.util.AttributeSet;
+import android.util.DebugUtils;
 import android.view.View;
 
 import com.module.mp3recorddemo.R;
+import com.module.mp3recorder.utils.DateUtils;
+import com.module.mp3recorder.utils.DensityUtils;
 
 /**
  * Created by binshenchen on 15/12/27.
@@ -42,6 +46,7 @@ public class DoughnutProgress extends View {
     private float secondWaveRaduis;
 
     private boolean isAnimationStart;
+    private long startTime;
 
     private Thread thread = new Thread() {
         @Override
@@ -83,6 +88,7 @@ public class DoughnutProgress extends View {
         if (!isAnimationStart) {
             isAnimationStart = true;
         }
+        startTime = System.currentTimeMillis();
         thread.start();
     }
 
@@ -125,7 +131,7 @@ public class DoughnutProgress extends View {
         paint.setStrokeWidth(doughnutWidth);
         paint.setStyle(Paint.Style.STROKE);
         paint.setShader(new SweepGradient(0, 0, doughnutColors, null));
-        canvas.drawArc(rectF, 0,360, false, paint);
+        canvas.drawArc(rectF, 0, 360, false, paint);
 
         //画旋转头部圆
         initPaint();
@@ -137,17 +143,12 @@ public class DoughnutProgress extends View {
         initPaint();
         paint.setColor(Color.argb(MAX_ALPHA, RED, GREEN, BLUE));
         paint.setAntiAlias(true);
-        canvas.drawCircle(0,0,raduis*doughnutRaduisPercent,paint);
+        canvas.drawCircle(0, 0, raduis * doughnutRaduisPercent, paint);
         //画图片
         initPaint();
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_mic_white);
         if (bitmap != null) {
-            Matrix m = new Matrix();
-            //确定secondBitmap大小比例
-//            m.setScale(1.5f/bitmap.getWidth(), 1.5f/bitmap.getHeight());
-            canvas.drawBitmap(bitmap,-bitmap.getWidth()/2,-bitmap.getHeight()/2,paint);
-//            canvas.drawBitmap(bitmap,m,paint);
-//            canvas.drawText("hello",0,0,paint);
+            canvas.drawBitmap(bitmap, -bitmap.getWidth() / 2, -bitmap.getHeight() / 2, paint);
         }
         //实现类似水波涟漪效果
         initPaint();
@@ -156,13 +157,25 @@ public class DoughnutProgress extends View {
         secondWaveRaduis = calculateWaveRaduis(secondWaveRaduis);
         firstWaveRaduis = calculateWaveRaduis(secondWaveRaduis + raduis * (MIDDLE_WAVE_RADUIS_PERCENT - doughnutRaduisPercent) - raduis * doughnutWidthPercent / 2);
         paint.setColor(Color.argb(calculateWaveAlpha(secondWaveRaduis), RED, GREEN, BLUE));
-        canvas.drawCircle(0, 0, secondWaveRaduis, paint); //画第二个圆（初始半径较小的）
+        //画第二个圆（初始半径较小的）
+        canvas.drawCircle(0, 0, secondWaveRaduis, paint);
 
         initPaint();
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(WAVE_WIDTH);
         paint.setColor(Color.argb(calculateWaveAlpha(firstWaveRaduis), RED, GREEN, BLUE));
-        canvas.drawCircle(0, 0, firstWaveRaduis, paint); //画第一个圆（初始半径较大的）
+        //画第一个圆（初始半径较大的）
+        canvas.drawCircle(0, 0, firstWaveRaduis, paint);
+        //画录音时长
+//        initPaint();
+//        String seconds = DateUtils.toTime((int) (System.currentTimeMillis()-startTime));
+//        paint.setStyle(Paint.Style.STROKE);
+//        paint.setColor(Color.argb(255, RED, GREEN, BLUE));
+//        paint.setTextSize(DensityUtils.sp2px(getContext(), 16));
+//        Rect bounds = new Rect();
+//        paint.getTextBounds(seconds, 0, seconds.length(), bounds);
+//        canvas.drawText(seconds, -bounds.width() / 2, -raduis + bounds.height() + 10, paint);
+
     }
 
     /**

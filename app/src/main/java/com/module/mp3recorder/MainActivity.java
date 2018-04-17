@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.module.mp3recorddemo.R;
-import com.module.mp3recorder.audio.CzAudioRecord;
-import com.module.mp3recorder.audio.Mp3Record;
+import com.module.mp3recorder.audio.CzAudioRecorder;
+import com.module.mp3recorder.audio.Mp3Recorder;
 import com.module.mp3recorder.listener.AudioRecordListener;
 import com.module.mp3recorder.widget.DoughnutProgress;
 import com.module.mp3recorder.widget.SpectrumView;
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
-    private CzAudioRecord mRecorder;
+    private CzAudioRecorder mRecorder;
     private String filePath= Environment.getExternalStorageDirectory().getPath() + "/test.mp3";
     private SpectrumView spectrum_view;
     private DoughnutProgress doughnut_progress;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createFile();
-        mRecorder = new Mp3Record();
+        mRecorder = new Mp3Recorder();
         mRecorder.setAudioPath(filePath);
         mRecorder.setAudioListener(new AudioRecordListener() {
             @Override

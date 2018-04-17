@@ -24,9 +24,9 @@ import java.util.concurrent.TimeUnit;
  * @email ：chezi008@163.com
  */
 
-public class Mp3Record implements CzAudioRecord {
+public class Mp3Recorder implements CzAudioRecorder {
 
-    //=======================CzAudioRecord Default Settings=======================
+    //=======================CzAudioRecorder Default Settings=======================
     private static final int DEFAULT_AUDIO_SOURCE = MediaRecorder.AudioSource.MIC;
     /**
      * 以下三项为默认配置参数。Google Android文档明确表明只有以下3个参数是可以在所有设备上保证支持的。

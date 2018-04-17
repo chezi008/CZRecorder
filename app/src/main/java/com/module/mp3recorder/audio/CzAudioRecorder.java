@@ -8,7 +8,7 @@ import com.module.mp3recorder.listener.AudioRecordListener;
  * @email ：chezi008@163.com
  */
 
-public interface CzAudioRecord {
+public interface CzAudioRecorder {
     void setAudioPath(String filePath);
     void setAudioListener(AudioRecordListener audioListener);
     void startRecord();

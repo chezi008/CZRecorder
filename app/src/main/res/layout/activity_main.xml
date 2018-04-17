@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:gravity="center">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/StartButton"
@@ -24,11 +25,12 @@
             android:layout_weight="1"
             android:text="Stop" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/ll_resume"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_pause"
@@ -49,15 +51,16 @@
         android:id="@+id/StatusTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
     <com.module.mp3recorder.widget.SpectrumView
         android:id="@+id/spectrum_view"
         android:layout_width="100dp"
         android:layout_height="40dp"
         app:rectangle_color="#FF6565"
-        app:rectangle_width="5dp"
-        app:rectangle_num="10"/>
-    <com.module.mp3recorder.widget.DoughnutProgress
-        android:id="@+id/doughnut_progress"
+        app:rectangle_num="10"
+        app:rectangle_width="5dp" />
+
+    <com.module.mp3recorder.widget.MicView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"></com.module.mp3recorder.widget.MicView>
 </LinearLayout>
