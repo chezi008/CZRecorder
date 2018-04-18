@@ -19,11 +19,13 @@
 效果图如下：
 1、长按进行MP3文件录制。
 2、松开按钮结束录制。
+
 ![录音动画.gif](https://github.com/chezi008/AndroidMp3Recorder/blob/master/recorder.gif)
 
 
 #### 4.3 自定义了频谱控件
 效果如上图
+
 ![频谱.gif](https://github.com/chezi008/AndroidMp3Recorder/blob/master/recorder_2.gif)
 
 
