@@ -46,7 +46,6 @@ public class DoughnutProgress extends View {
     private float secondWaveRaduis;
 
     private boolean isAnimationStart;
-    private long startTime;
 
     private Thread thread = new Thread() {
         @Override
@@ -88,7 +87,6 @@ public class DoughnutProgress extends View {
         if (!isAnimationStart) {
             isAnimationStart = true;
         }
-        startTime = System.currentTimeMillis();
         thread.start();
     }
 
@@ -166,15 +164,6 @@ public class DoughnutProgress extends View {
         paint.setColor(Color.argb(calculateWaveAlpha(firstWaveRaduis), RED, GREEN, BLUE));
         //画第一个圆（初始半径较大的）
         canvas.drawCircle(0, 0, firstWaveRaduis, paint);
-        //画录音时长
-//        initPaint();
-//        String seconds = DateUtils.toTime((int) (System.currentTimeMillis()-startTime));
-//        paint.setStyle(Paint.Style.STROKE);
-//        paint.setColor(Color.argb(255, RED, GREEN, BLUE));
-//        paint.setTextSize(DensityUtils.sp2px(getContext(), 16));
-//        Rect bounds = new Rect();
-//        paint.getTextBounds(seconds, 0, seconds.length(), bounds);
-//        canvas.drawText(seconds, -bounds.width() / 2, -raduis + bounds.height() + 10, paint);
 
     }
 
