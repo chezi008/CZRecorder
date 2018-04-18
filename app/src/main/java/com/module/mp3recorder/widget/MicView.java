@@ -29,6 +29,7 @@ public class MicView extends LinearLayout {
     private boolean isAnimationStart;
     private Handler mHandler;
     private Runnable mTimeRunnable;
+    private MicListener micListener;
 
     public MicView(Context context) {
         this(context, null);
@@ -37,6 +38,10 @@ public class MicView extends LinearLayout {
     public MicView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initView();
+    }
+
+    public void setMicListener(MicListener micListener) {
+        this.micListener = micListener;
     }
 
     private void initView() {
@@ -56,8 +61,8 @@ public class MicView extends LinearLayout {
             public void run() {
                 while (isAnimationStart) {
                     try {
-                        Thread.sleep(1000);
                         mHandler.sendEmptyMessage(0);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -78,6 +83,23 @@ public class MicView extends LinearLayout {
         mDoughnutProgress.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startAnimation();
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        if (event.getY() < 0) {
+                            stopAnimation();
+                        } else {
+
+                        }
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        stopAnimation();
+                        return true;
+                    default:
+                        break;
+                }
                 return false;
             }
         });
@@ -85,17 +107,31 @@ public class MicView extends LinearLayout {
     }
 
     private void startAnimation() {
-        if(!isAnimationStart){
+        if (!isAnimationStart) {
             isAnimationStart = true;
             startTime = System.currentTimeMillis();
             mDoughnutProgress.startAnimation();
+            mTvTime.setVisibility(VISIBLE);
             new Thread(mTimeRunnable).start();
+            if (micListener != null) {
+                micListener.onStart();
+            }
         }
     }
 
     private void stopAnimation() {
         isAnimationStart = false;
         startTime = 0;
-        mDoughnutProgress.startAnimation();
+        mDoughnutProgress.stopAnimation();
+        mTvTime.setVisibility(GONE);
+        if (micListener != null) {
+            micListener.onStop();
+        }
+    }
+
+    public interface MicListener {
+        void onStart();
+
+        void onStop();
     }
 }

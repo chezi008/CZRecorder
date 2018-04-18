@@ -12,6 +12,7 @@ import com.module.mp3recorder.audio.CzAudioRecorder;
 import com.module.mp3recorder.audio.Mp3Recorder;
 import com.module.mp3recorder.listener.AudioRecordListener;
 import com.module.mp3recorder.widget.DoughnutProgress;
+import com.module.mp3recorder.widget.MicView;
 import com.module.mp3recorder.widget.SpectrumView;
 
 import java.io.File;
@@ -28,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private CzAudioRecorder mRecorder;
     private String filePath= Environment.getExternalStorageDirectory().getPath() + "/test.mp3";
     private SpectrumView spectrum_view;
-    private DoughnutProgress doughnut_progress;
+
+    private MicView mic_view;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mRecorder.startRecord();
                 spectrum_view.start();
-                doughnut_progress.startAnimation();
             }
         });
         Button stopButton = (Button) findViewById(R.id.StopButton);
@@ -58,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mRecorder.stopRecord();
                 spectrum_view.stop();
-                doughnut_progress.stopAnimation();
             }
         });
         Button btnPause = findViewById(R.id.btn_pause);
@@ -77,7 +77,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         spectrum_view = findViewById(R.id.spectrum_view);
-        doughnut_progress = findViewById(R.id.doughnut_progress);
+
+        mic_view = findViewById(R.id.mic_view);
+        mic_view.setMicListener(new MicView.MicListener() {
+            @Override
+            public void onStart() {
+                mRecorder.startRecord();
+            }
+
+            @Override
+            public void onStop() {
+                mRecorder.stopRecord();
+            }
+        });
     }
 
     private void createFile() {
