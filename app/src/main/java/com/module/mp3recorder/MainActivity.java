@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.module.mp3recorddemo.R;
 import com.module.mp3recorder.audio.CzAudioRecorder;
@@ -88,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStop() {
                 mRecorder.stopRecord();
+                String strFinish = String.format("录制完成，保存在：%s",filePath);
+                Toast.makeText(MainActivity.this, strFinish, Toast.LENGTH_SHORT).show();
             }
         });
     }
