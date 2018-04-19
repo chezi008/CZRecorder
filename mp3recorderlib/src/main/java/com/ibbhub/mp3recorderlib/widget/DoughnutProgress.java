@@ -1,22 +1,18 @@
-package com.module.mp3recorder.widget;
+package com.ibbhub.mp3recorderlib.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.SweepGradient;
 import android.util.AttributeSet;
-import android.util.DebugUtils;
 import android.view.View;
 
-import com.module.mp3recorddemo.R;
-import com.module.mp3recorder.utils.DateUtils;
-import com.module.mp3recorder.utils.DensityUtils;
+import com.ibbhub.mp3recorderlib.R;
+
 
 /**
  * Created by binshenchen on 15/12/27.
@@ -144,7 +140,7 @@ public class DoughnutProgress extends View {
         canvas.drawCircle(0, 0, raduis * doughnutRaduisPercent, paint);
         //画图片
         initPaint();
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_mic_white);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_mic_white);
         if (bitmap != null) {
             canvas.drawBitmap(bitmap, -bitmap.getWidth() / 2, -bitmap.getHeight() / 2, paint);
         }

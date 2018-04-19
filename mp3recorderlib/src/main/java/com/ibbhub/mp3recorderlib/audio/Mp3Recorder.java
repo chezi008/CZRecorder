@@ -1,4 +1,4 @@
-package com.module.mp3recorder.audio;
+package com.ibbhub.mp3recorderlib.audio;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -6,9 +6,9 @@ import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.HandlerThread;
 
-import com.module.mp3recorder.listener.AudioRecordListener;
-import com.module.mp3recorder.utils.PCMFormat;
-import com.module.mp3recorder.utils.LameUtil;
+import com.ibbhub.mp3recorderlib.listener.AudioRecordListener;
+import com.ibbhub.mp3recorderlib.utils.PCMFormat;
+import com.ibbhub.mp3recorderlib.utils.LameUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;

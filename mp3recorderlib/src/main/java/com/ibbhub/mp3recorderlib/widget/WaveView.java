@@ -1,4 +1,4 @@
-package com.module.mp3recorder.widget;
+package com.ibbhub.mp3recorderlib.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

@@ -1,4 +1,4 @@
-package com.module.mp3recorder.utils;
+package com.ibbhub.mp3recorderlib.utils;
 
 import android.annotation.SuppressLint;
 

@@ -1,4 +1,4 @@
-package com.module.mp3recorder.widget;
+package com.ibbhub.mp3recorderlib.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -12,8 +12,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-import com.module.mp3recorddemo.R;
-import com.module.mp3recorder.utils.DensityUtils;
+
+import com.ibbhub.mp3recorderlib.R;
 
 import java.util.ArrayList;
 import java.util.List;

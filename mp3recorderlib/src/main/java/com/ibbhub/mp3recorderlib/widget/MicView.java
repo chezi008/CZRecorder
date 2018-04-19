@@ -1,4 +1,4 @@
-package com.module.mp3recorder.widget;
+package com.ibbhub.mp3recorderlib.widget;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.module.mp3recorder.utils.DateUtils;
+import com.ibbhub.mp3recorderlib.utils.DateUtils;
 
 /**
  * @author ：chezi008 on 2018/4/17 21:03

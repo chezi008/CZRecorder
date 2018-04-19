@@ -8,13 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.ibbhub.mp3recorderlib.audio.CzAudioRecorder;
+import com.ibbhub.mp3recorderlib.audio.Mp3Recorder;
+import com.ibbhub.mp3recorderlib.listener.AudioRecordListener;
+import com.ibbhub.mp3recorderlib.widget.MicView;
+import com.ibbhub.mp3recorderlib.widget.SpectrumView;
 import com.module.mp3recorddemo.R;
-import com.module.mp3recorder.audio.CzAudioRecorder;
-import com.module.mp3recorder.audio.Mp3Recorder;
-import com.module.mp3recorder.listener.AudioRecordListener;
-import com.module.mp3recorder.widget.DoughnutProgress;
-import com.module.mp3recorder.widget.MicView;
-import com.module.mp3recorder.widget.SpectrumView;
 
 import java.io.File;
 import java.io.IOException;
