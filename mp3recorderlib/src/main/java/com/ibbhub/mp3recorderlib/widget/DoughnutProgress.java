@@ -140,7 +140,7 @@ public class DoughnutProgress extends View {
         canvas.drawCircle(0, 0, raduis * doughnutRaduisPercent, paint);
         //画图片
         initPaint();
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_mic_white);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_mic_white);
         if (bitmap != null) {
             canvas.drawBitmap(bitmap, -bitmap.getWidth() / 2, -bitmap.getHeight() / 2, paint);
         }
