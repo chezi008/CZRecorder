@@ -20,7 +20,7 @@ public class DensityUtils {
      * dp转px
      *
      * @param context
-     * @param val
+     * @param dpVal
      * @return
      */
     public static int dp2px(Context context, float dpVal) {
