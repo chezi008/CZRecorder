@@ -1,4 +1,4 @@
-package com.ibbhub.mp3recorderlib.widget;
+package com.ibbhub.mp3recorderlib;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,9 +15,11 @@ import com.ibbhub.mp3recorderlib.R;
 
 
 /**
- * Created by binshenchen on 15/12/27.
+ * @author ：chezi008 on 2018/7/23 21:31
+ * @description ：
+ * @email ：chezi008@qq.com
  */
-public class DoughnutProgress extends View {
+class RecorderProgressView extends View {
     private static final int DEFAULT_MIN_WIDTH = 400; //View默认最小宽度
     private static final int RED = 230, GREEN = 85, BLUE = 35; //基础颜色，这里是橙红色
     private static final int MIN_ALPHA = 30; //最小不透明度
@@ -57,17 +59,17 @@ public class DoughnutProgress extends View {
         }
     };
 
-    public DoughnutProgress(Context context) {
+    public RecorderProgressView(Context context) {
         super(context);
         init();
     }
 
-    public DoughnutProgress(Context context, AttributeSet attrs) {
+    public RecorderProgressView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public DoughnutProgress(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RecorderProgressView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }

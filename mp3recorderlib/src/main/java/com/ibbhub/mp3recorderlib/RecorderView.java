@@ -1,4 +1,4 @@
-package com.ibbhub.mp3recorderlib.widget;
+package com.ibbhub.mp3recorderlib;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,35 +13,33 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ibbhub.mp3recorderlib.utils.DateUtils;
-
 /**
  * @author ：chezi008 on 2018/4/17 21:03
  * @description ：自定义麦克风录音控件，带录音时长
  * @email ：chezi008@163.com
  */
-public class MicView extends LinearLayout {
+public class RecorderView extends LinearLayout {
 
     private TextView mTvTime;
-    private DoughnutProgress mDoughnutProgress;
+    private RecorderProgressView mRecorderProgressView;
 
     private long startTime = 0;
     private boolean isAnimationStart;
     private Handler mHandler;
     private Runnable mTimeRunnable;
-    private MicListener micListener;
+    private RecorderViewListener recorderViewListener;
 
-    public MicView(Context context) {
+    public RecorderView(Context context) {
         this(context, null);
     }
 
-    public MicView(Context context, @Nullable AttributeSet attrs) {
+    public RecorderView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initView();
     }
 
-    public void setMicListener(MicListener micListener) {
-        this.micListener = micListener;
+    public void setRecorderViewListener(RecorderViewListener recorderViewListener) {
+        this.recorderViewListener = recorderViewListener;
     }
 
     private void initView() {
@@ -77,10 +75,10 @@ public class MicView extends LinearLayout {
         LinearLayout.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         addView(mTvTime, params);
 
-        mDoughnutProgress = new DoughnutProgress(getContext());
-        addView(mDoughnutProgress, params);
+        mRecorderProgressView = new RecorderProgressView(getContext());
+        addView(mRecorderProgressView, params);
 
-        mDoughnutProgress.setOnTouchListener(new OnTouchListener() {
+        mRecorderProgressView.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
@@ -110,11 +108,11 @@ public class MicView extends LinearLayout {
         if (!isAnimationStart) {
             isAnimationStart = true;
             startTime = System.currentTimeMillis();
-            mDoughnutProgress.startAnimation();
+            mRecorderProgressView.startAnimation();
             mTvTime.setVisibility(VISIBLE);
             new Thread(mTimeRunnable).start();
-            if (micListener != null) {
-                micListener.onStart();
+            if (recorderViewListener != null) {
+                recorderViewListener.onStart();
             }
         }
     }
@@ -122,14 +120,14 @@ public class MicView extends LinearLayout {
     private void stopAnimation() {
         isAnimationStart = false;
         startTime = 0;
-        mDoughnutProgress.stopAnimation();
+        mRecorderProgressView.stopAnimation();
         mTvTime.setVisibility(GONE);
-        if (micListener != null) {
-            micListener.onStop();
+        if (recorderViewListener != null) {
+            recorderViewListener.onStop();
         }
     }
 
-    public interface MicListener {
+    public interface RecorderViewListener {
         void onStart();
 
         void onStop();

@@ -7,5 +7,10 @@ package com.ibbhub.mp3recorderlib.listener;
  */
 
 public interface AudioRecordListener {
+    /**
+     * 获取录制音量的大小
+     *
+     * @param volume
+     */
     void onGetVolume(int volume);
 }

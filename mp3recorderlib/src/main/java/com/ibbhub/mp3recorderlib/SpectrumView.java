@@ -1,4 +1,4 @@
-package com.ibbhub.mp3recorderlib.widget;
+package com.ibbhub.mp3recorderlib;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -87,7 +87,7 @@ public class SpectrumView extends View {
         //指针的数量，默认为4
         pointerNum = ta.getInt(R.styleable.SpectrumView_rectangle_num, 4);
         //指针的宽度，默认5dp
-        pointerWidth = ta.getDimension(R.styleable.SpectrumView_rectangle_width,5f);
+        pointerWidth = ta.getDimension(R.styleable.SpectrumView_rectangle_width, 5f);
         pointerSpeed = ta.getInt(R.styleable.SpectrumView_rectangle_speed, 40);
     }
 
@@ -111,7 +111,7 @@ public class SpectrumView extends View {
                         for (int j = 0; j < pointers.size(); j++) {
                             //利用正弦有规律的获取0~1的数。
                             float rate = (float) Math.abs(Math.sin(i + j));
-                            Log.d(TAG, "run: i:"+i);
+                            Log.d(TAG, "run: i:" + i);
                             //rate 乘以 可绘制高度，来改变每个指针的高度
                             pointers.get(j).setHeight((basePointY - getPaddingTop()) * rate);
                         }

@@ -1,4 +1,4 @@
-package com.ibbhub.mp3recorderlib.utils;
+package com.ibbhub.mp3recorderlib;
 
 import android.annotation.SuppressLint;
 
@@ -7,7 +7,7 @@ import android.annotation.SuppressLint;
  * @description ：
  * @email ：chezi008@163.com
  */
-public class DateUtils {
+class DateUtils {
     @SuppressLint({"DefaultLocale"})
     public static String toTime(int var0) {
         var0 /= 1000;

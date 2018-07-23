@@ -8,11 +8,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.ibbhub.mp3recorderlib.audio.CzAudioRecorder;
-import com.ibbhub.mp3recorderlib.audio.Mp3Recorder;
+import com.ibbhub.mp3recorderlib.IAudioRecorder;
+import com.ibbhub.mp3recorderlib.Mp3Recorder;
+import com.ibbhub.mp3recorderlib.SpectrumView;
 import com.ibbhub.mp3recorderlib.listener.AudioRecordListener;
-import com.ibbhub.mp3recorderlib.widget.MicView;
-import com.ibbhub.mp3recorderlib.widget.SpectrumView;
+import com.ibbhub.mp3recorderlib.RecorderView;
 import com.module.mp3recorddemo.R;
 
 import java.io.File;
@@ -26,11 +26,11 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
-    private CzAudioRecorder mRecorder;
+    private IAudioRecorder mRecorder;
     private String filePath= Environment.getExternalStorageDirectory().getPath() + "/test.mp3";
     private SpectrumView spectrum_view;
 
-    private MicView mic_view;
+    private RecorderView mic_view;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         spectrum_view = findViewById(R.id.spectrum_view);
 
         mic_view = findViewById(R.id.mic_view);
-        mic_view.setMicListener(new MicView.MicListener() {
+        mic_view.setRecorderViewListener(new RecorderView.RecorderViewListener() {
             @Override
             public void onStart() {
                 mRecorder.startRecord();

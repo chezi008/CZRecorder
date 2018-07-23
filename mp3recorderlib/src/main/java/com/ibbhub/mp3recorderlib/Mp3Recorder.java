@@ -1,4 +1,4 @@
-package com.ibbhub.mp3recorderlib.audio;
+package com.ibbhub.mp3recorderlib;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 
 import com.ibbhub.mp3recorderlib.listener.AudioRecordListener;
-import com.ibbhub.mp3recorderlib.utils.PCMFormat;
 import com.ibbhub.mp3recorderlib.utils.LameUtil;
 
 import java.io.File;
@@ -24,9 +23,9 @@ import java.util.concurrent.TimeUnit;
  * @email ：chezi008@163.com
  */
 
-public class Mp3Recorder implements CzAudioRecorder {
+public class Mp3Recorder implements IAudioRecorder {
 
-    //=======================CzAudioRecorder Default Settings=======================
+    //=======================IAudioRecorder Default Settings=======================
     private static final int DEFAULT_AUDIO_SOURCE = MediaRecorder.AudioSource.MIC;
     /**
      * 以下三项为默认配置参数。Google Android文档明确表明只有以下3个参数是可以在所有设备上保证支持的。
