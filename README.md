@@ -146,7 +146,7 @@ repositories {
 ```
 Next add a dependency in the build.gradle file of your app module. The following will add a dependency to the full library:
 ```
-implementation 'com.ibbhub.audio:mp3recorderlib:1.0.3'
+implementation 'com.ibbhub.audio:mp3recorderlib:1.0.4'
 ```
 
 ### github:  https://github.com/chezi008/AndroidMp3Recorder
