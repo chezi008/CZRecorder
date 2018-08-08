@@ -61,7 +61,6 @@ public class Mp3Recorder implements IAudioRecorder {
     private int mBufferSize;
     private short[] mPCMBuffer;
     private boolean mIsRecording;
-    private File mRecordFile;
 
     private HandlerThread mChildHandlerThread;
     private Handler mChiHandler;
@@ -78,10 +77,6 @@ public class Mp3Recorder implements IAudioRecorder {
         initChildHandler();
     }
 
-    @Override
-    public void setAudioPath(String filePath) {
-        mRecordFile = new File(filePath);
-    }
 
     @Override
     public void setAudioListener(AudioRecordListener audioListener) {
@@ -89,9 +84,9 @@ public class Mp3Recorder implements IAudioRecorder {
     }
 
     @Override
-    public void start() {
+    public void start(String path) {
         try {
-            mFileOutputStream = new FileOutputStream(mRecordFile);
+            mFileOutputStream = new FileOutputStream(path);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return;

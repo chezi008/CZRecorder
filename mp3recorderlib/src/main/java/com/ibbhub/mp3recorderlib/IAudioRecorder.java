@@ -9,12 +9,6 @@ import com.ibbhub.mp3recorderlib.listener.AudioRecordListener;
  */
 
 public interface IAudioRecorder {
-    /**
-     * 设置保存文件的路径
-     *
-     * @param filePath 录制文件的地址
-     */
-    void setAudioPath(String filePath);
 
     /**
      * 设置回调
@@ -25,8 +19,9 @@ public interface IAudioRecorder {
 
     /**
      * 开始录制音频
+     * @param path 录制文件的地址
      */
-    void start();
+    void start(String path);
 
     /**
      * 暂停录制
