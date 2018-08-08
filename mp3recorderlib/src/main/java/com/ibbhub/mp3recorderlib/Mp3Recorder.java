@@ -24,6 +24,7 @@ import java.util.concurrent.Future;
  */
 
 public class Mp3Recorder implements IAudioRecorder {
+
     private String TAG = getClass().getSimpleName();
     //=======================IAudioRecorder Default Settings=======================
     private static final int DEFAULT_AUDIO_SOURCE = MediaRecorder.AudioSource.MIC;
@@ -173,12 +174,16 @@ public class Mp3Recorder implements IAudioRecorder {
 
     @Override
     public void onResume() {
+        startMillisecond = System.currentTimeMillis();
         mAudioRecord.startRecording();
     }
 
+    private long startMillisecond;
+
     @Override
-    public void stop() {
+    public long stop() {
         mIsRecording = false;
+        return startMillisecond - System.currentTimeMillis();
     }
 
     /**
@@ -248,7 +253,7 @@ public class Mp3Recorder implements IAudioRecorder {
         @Override
         public void run() {
             initAudioRecord();
-            mAudioRecord.startRecording();
+            onResume();
             initMp3Lame();
             while (mIsRecording) {
                 int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);

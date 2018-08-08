@@ -40,6 +40,8 @@ public interface IAudioRecorder {
 
     /**
      * 停止录制
+     *
+     * @return 返回录制的时长 ，millisecond
      */
-    void stop();
+    long stop();
 }
