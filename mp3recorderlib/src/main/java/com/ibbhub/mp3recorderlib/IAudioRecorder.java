@@ -26,7 +26,7 @@ public interface IAudioRecorder {
     /**
      * 开始录制音频
      */
-    void startRecord();
+    void start();
 
     /**
      * 暂停录制
@@ -41,5 +41,5 @@ public interface IAudioRecorder {
     /**
      * 停止录制
      */
-    void stopRecord();
+    void stop();
 }

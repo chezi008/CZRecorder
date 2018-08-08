@@ -13,6 +13,10 @@ import android.view.View;
 
 import com.ibbhub.mp3recorderlib.R;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 
 /**
  * @author ：chezi008 on 2018/7/23 21:31
@@ -44,20 +48,8 @@ class RecorderProgressView extends View {
     private float secondWaveRaduis;
 
     private boolean isAnimationStart;
-
-    private Thread thread = new Thread() {
-        @Override
-        public void run() {
-            while (isAnimationStart) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                postInvalidate();
-            }
-        }
-    };
+    private ExecutorService esAnimation = Executors.newSingleThreadExecutor();
+    private Future ftAnimation;
 
     public RecorderProgressView(Context context) {
         super(context);
@@ -85,11 +77,14 @@ class RecorderProgressView extends View {
         if (!isAnimationStart) {
             isAnimationStart = true;
         }
-        thread.start();
+        if (ftAnimation == null||ftAnimation.isDone()) {
+            ftAnimation = esAnimation.submit(animationRunnable);
+        }
     }
 
     public void stopAnimation() {
         isAnimationStart = false;
+        ftAnimation.cancel(true);
     }
 
     private void resetParams() {
@@ -221,4 +216,18 @@ class RecorderProgressView extends View {
         }
         return result;
     }
+
+    private Runnable animationRunnable = new Runnable() {
+        @Override
+        public void run() {
+            while (isAnimationStart) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                postInvalidate();
+            }
+        }
+    };
 }

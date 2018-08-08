@@ -13,9 +13,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * @author ：chezi008 on 2018/1/15 16:40
@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class Mp3Recorder implements IAudioRecorder {
-
+    private String TAG = getClass().getSimpleName();
     //=======================IAudioRecorder Default Settings=======================
     private static final int DEFAULT_AUDIO_SOURCE = MediaRecorder.AudioSource.MIC;
     /**
@@ -46,7 +46,7 @@ public class Mp3Recorder implements IAudioRecorder {
      */
     private static final int DEFAULT_LAME_IN_CHANNEL = 1;
     /**
-     *  Encoded bit rate. MP3 file will be encoded with bit rate 32kbps
+     * Encoded bit rate. MP3 file will be encoded with bit rate 32kbps
      */
     private static final int DEFAULT_LAME_MP3_BIT_RATE = 32;
 
@@ -65,18 +65,17 @@ public class Mp3Recorder implements IAudioRecorder {
     private HandlerThread mChildHandlerThread;
     private Handler mChiHandler;
 
-    private static final int CORE_POOL_SIZE = 1;
-    private static final int MAXIMUM_POOL_SIZE = 2;
-    private static final int KEEP_ALIVE_TIME = 2;
-    private ArrayBlockingQueue mArrayBlockingQueue;
-
-    private Runnable recordAudioRunable;
-    private ThreadPoolExecutor mThreadPoolExecutor;
+    private ExecutorService esRecord = Executors.newSingleThreadExecutor();
+    private Future ftRecord;
 
     private AudioRecordListener mAudioRecordListener;
 
     private byte[] mMp3Buffer;
     private FileOutputStream mFileOutputStream;
+
+    public Mp3Recorder() {
+        initChildHandler();
+    }
 
     @Override
     public void setAudioPath(String filePath) {
@@ -89,10 +88,7 @@ public class Mp3Recorder implements IAudioRecorder {
     }
 
     @Override
-    public void startRecord() {
-        if(!mRecordFile.exists()){
-            throw new IllegalArgumentException("录音保存文件的地址不存在！");
-        }
+    public void start() {
         try {
             mFileOutputStream = new FileOutputStream(mRecordFile);
         } catch (FileNotFoundException e) {
@@ -104,16 +100,13 @@ public class Mp3Recorder implements IAudioRecorder {
         }
         // 提早，防止init或startRecording被多次调用
         mIsRecording = true;
-        initChildHandler();
-        initAudioRecord();
-        mAudioRecord.startRecording();
-        initMp3Lame();
-        initRunable();
-        mThreadPoolExecutor.execute(recordAudioRunable);
+        if (ftRecord == null || ftRecord.isDone()) {
+            ftRecord = esRecord.submit(recordAudioRunable);
+        }
     }
 
     private void initChildHandler() {
-        if(mChildHandlerThread==null){
+        if (mChildHandlerThread == null) {
             mChildHandlerThread = new HandlerThread("converMp3Thread");
             mChildHandlerThread.start();
 
@@ -121,39 +114,13 @@ public class Mp3Recorder implements IAudioRecorder {
         }
     }
 
-    private void initRunable() {
-        if(mThreadPoolExecutor==null){
-            mArrayBlockingQueue = new ArrayBlockingQueue(MAXIMUM_POOL_SIZE);
-            mThreadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE,MAXIMUM_POOL_SIZE,
-                    KEEP_ALIVE_TIME, TimeUnit.MILLISECONDS,mArrayBlockingQueue);
-        }
-        if (recordAudioRunable ==null){
-            recordAudioRunable = new Runnable() {
-                @Override
-                public void run() {
-                    while (mIsRecording) {
-                        int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
-                        if (readSize > 0) {
-                            processData(mPCMBuffer,readSize);
-                            calculateRealVolume(mPCMBuffer, readSize);
-                        }
-                    }
-                    // release and finalize audioRecord
-                    mAudioRecord.release();
-                    mAudioRecord = null;
-
-                }
-            };
-        }
-    }
-
     private void initMp3Lame() {
         /*
-		 * Initialize lame buffer
-		 * mp3 sampling rate is the same as the recorded pcm sampling rate
-		 * The bit rate is 32kbps
-		 *
-		 */
+         * Initialize lame buffer
+         * mp3 sampling rate is the same as the recorded pcm sampling rate
+         * The bit rate is 32kbps
+         *
+         */
         LameUtil.init(DEFAULT_SAMPLING_RATE, DEFAULT_LAME_IN_CHANNEL,
                 DEFAULT_SAMPLING_RATE, DEFAULT_LAME_MP3_BIT_RATE, DEFAULT_LAME_MP3_QUALITY);
     }
@@ -166,10 +133,10 @@ public class Mp3Recorder implements IAudioRecorder {
                 DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT.getAudioFormat());
 
         int bytesPerFrame = DEFAULT_AUDIO_FORMAT.getBytesPerFrame();
-		/* Get number of samples. Calculate the buffer size
-		 * (round up to the factor of given frame size)
-		 * 使能被整除，方便下面的周期性通知
-		 * */
+        /* Get number of samples. Calculate the buffer size
+         * (round up to the factor of given frame size)
+         * 使能被整除，方便下面的周期性通知
+         * */
         int frameSize = mBufferSize / bytesPerFrame;
         if (frameSize % FRAME_COUNT != 0) {
             frameSize += (FRAME_COUNT - frameSize % FRAME_COUNT);
@@ -178,7 +145,7 @@ public class Mp3Recorder implements IAudioRecorder {
 
         mMp3Buffer = new byte[(int) (7200 + (mBufferSize * 2 * 1.25))];
 
-		/* Setup audio recorder */
+        /* Setup audio recorder */
         mAudioRecord = new AudioRecord(DEFAULT_AUDIO_SOURCE,
                 DEFAULT_SAMPLING_RATE, DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT.getAudioFormat(),
                 mBufferSize);
@@ -210,14 +177,14 @@ public class Mp3Recorder implements IAudioRecorder {
     }
 
     @Override
-    public void stopRecord() {
+    public void stop() {
         mIsRecording = false;
-        flushAndRelease();
     }
+
     /**
      * 此计算方法来自samsung开发范例
      *
-     * @param buffer buffer
+     * @param buffer   buffer
      * @param readSize readSize
      */
     private void calculateRealVolume(short[] buffer, int readSize) {
@@ -229,19 +196,21 @@ public class Mp3Recorder implements IAudioRecorder {
         if (readSize > 0) {
             double amplitude = sum / readSize;
             int volume = (int) Math.sqrt(amplitude);
-            if(mAudioRecordListener!=null){
+            if (mAudioRecordListener != null) {
                 mAudioRecordListener.onGetVolume(volume);
             }
         }
     }
+
     /**
      * 从缓冲区中读取并处理数据，使用lame编码MP3
-     * @return  从缓冲区中读取的数据的长度
-     * 			缓冲区中没有数据时返回0
+     *
+     * @return 从缓冲区中读取的数据的长度
+     * 缓冲区中没有数据时返回0
      */
     private int processData(short[] rawData, int readSize) {
         int encodedSize = LameUtil.encode(rawData, rawData, readSize, mMp3Buffer);
-        if (encodedSize > 0){
+        if (encodedSize > 0) {
             try {
                 mFileOutputStream.write(mMp3Buffer, 0, encodedSize);
             } catch (IOException e) {
@@ -250,6 +219,7 @@ public class Mp3Recorder implements IAudioRecorder {
         }
         return readSize;
     }
+
     /**
      * Flush all data left in lame buffer to file
      */
@@ -261,7 +231,7 @@ public class Mp3Recorder implements IAudioRecorder {
                 mFileOutputStream.write(mMp3Buffer, 0, flushResult);
             } catch (IOException e) {
                 e.printStackTrace();
-            }finally{
+            } finally {
                 if (mFileOutputStream != null) {
                     try {
                         mFileOutputStream.close();
@@ -273,4 +243,25 @@ public class Mp3Recorder implements IAudioRecorder {
             }
         }
     }
+
+    private Runnable recordAudioRunable = new Runnable() {
+        @Override
+        public void run() {
+            initAudioRecord();
+            mAudioRecord.startRecording();
+            initMp3Lame();
+            while (mIsRecording) {
+                int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
+                if (readSize > 0) {
+                    processData(mPCMBuffer, readSize);
+                    calculateRealVolume(mPCMBuffer, readSize);
+                }
+            }
+
+            // release and finalize audioRecord
+            mAudioRecord.release();
+            mAudioRecord = null;
+            flushAndRelease();
+        }
+    };
 }

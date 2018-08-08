@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRecorder.startRecord();
+                mRecorder.start();
                 spectrum_view.start();
             }
         });
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRecorder.stopRecord();
+                mRecorder.stop();
                 spectrum_view.stop();
             }
         });
@@ -82,12 +82,12 @@ public class MainActivity extends AppCompatActivity {
         mic_view.setRecorderViewListener(new RecorderView.RecorderViewListener() {
             @Override
             public void onStart() {
-                mRecorder.startRecord();
+                mRecorder.start();
             }
 
             @Override
             public void onStop() {
-                mRecorder.stopRecord();
+                mRecorder.stop();
                 String strFinish = String.format("录制完成，保存在：%s",filePath);
                 Toast.makeText(MainActivity.this, strFinish, Toast.LENGTH_SHORT).show();
             }
@@ -108,6 +108,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mRecorder.stopRecord();
+        mRecorder.stop();
     }
 }
