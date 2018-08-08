@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         createFile();
         mRecorder = new Mp3Recorder();
-        mRecorder.setAudioPath(filePath);
         mRecorder.setAudioListener(new AudioRecordListener() {
             @Override
             public void onGetVolume(int volume) {
@@ -49,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRecorder.start();
+                mRecorder.start(filePath);
                 spectrum_view.start();
             }
         });
@@ -82,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         mic_view.setRecorderViewListener(new RecorderView.RecorderViewListener() {
             @Override
             public void onStart() {
-                mRecorder.start();
+                mRecorder.start(filePath);
             }
 
             @Override
