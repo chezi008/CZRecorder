@@ -2,7 +2,7 @@ package com.ibbhub.mp3recorderlib.utils;
 
 public class LameUtil {
 	static{
-		System.loadLibrary("native-lib");
+		System.loadLibrary("mp3recorder-lib");
 	}
 
 	/**

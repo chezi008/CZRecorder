@@ -22,7 +22,7 @@ set_target_properties( mp3lame
 include_directories(libs/include)
 
 add_library( # Sets the name of the library.
-             native-lib
+             mp3recorder-lib
 
              # Sets the library as a shared library.
              SHARED
@@ -50,7 +50,7 @@ find_library( # Sets the name of the path variable.
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
-                       native-lib
+                       mp3recorder-lib
 
                        mp3lame
 

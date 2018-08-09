@@ -175,10 +175,20 @@ public class Mp3Recorder implements IAudioRecorder {
 
     private long startMillisecond;
 
+    /**
+     * stop
+     *
+     * @return 返回-1表示，传入的路径无效
+     */
     @Override
     public long stop() {
         mIsRecording = false;
-        return startMillisecond - System.currentTimeMillis();
+        if (startMillisecond == 0) {
+            return -1;
+        }
+        long duration = System.currentTimeMillis() - startMillisecond;
+        startMillisecond = 0;
+        return duration;
     }
 
     /**

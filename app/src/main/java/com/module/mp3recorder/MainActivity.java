@@ -22,9 +22,6 @@ public class MainActivity extends AppCompatActivity {
     private String TAG = getClass().getSimpleName();
 
     // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-    }
 
     private IAudioRecorder mRecorder;
     private String filePath= Environment.getExternalStorageDirectory().getPath() + "/test.mp3";
