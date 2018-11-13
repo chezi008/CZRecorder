@@ -1,4 +1,5 @@
 ## AndroidMp3Recorder
+[![](https://jitpack.io/v/chezi008/AndroidMp3Recorder.svg)](https://jitpack.io/#chezi008/AndroidMp3Recorder)
 ### 一、功能说明
 1、通过libmp3lame库将PCM转成MP3的音频格式。
 2、添加一个自定义的录音控件。
