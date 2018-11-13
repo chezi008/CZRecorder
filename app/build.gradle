@@ -27,6 +27,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    implementation project(':mp3recorderlib')
+//    implementation project(':mp3recorderlib')
 //    implementation 'com.ibbhub.audio:mp3recorderlib:1.0.8'
+
+    implementation 'com.github.chezi008:AndroidMp3Recorder:v1.0.4'
 }
