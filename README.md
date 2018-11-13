@@ -141,13 +141,13 @@ You need to make sure you have the JCenter and Google repositories included in t
 ```
 repositories {
         jcenter()
-        mavenCentral();
+       maven { url 'https://jitpack.io' }
     }
 
 ```
 Next add a dependency in the build.gradle file of your app module. The following will add a dependency to the full library:
 ```
-implementation 'com.ibbhub.audio:mp3recorderlib:1.0.8'
+implementation 'com.github.chezi008:AndroidMp3Recorder:v1.0.4'
 ```
 
 ### github:  https://github.com/chezi008/AndroidMp3Recorder
