@@ -1,1 +1,4 @@
 include ':app', ':mp3recorderlib'
+
+include ':lamemp3'
+project(":lamemp3").projectDir = file("./Lame/LameMP3/CMake")
