@@ -19,10 +19,11 @@ add_library( mp3lame
 set_target_properties( mp3lame
                        PROPERTIES
                        IMPORTED_LOCATION ${LIBMP3_DIR}/${ANDROID_ABI}/libmp3lame.so)
+
 include_directories(libs/include)
 
 add_library( # Sets the name of the library.
-             mp3recorder-lib
+             mp3recorder
 
              # Sets the library as a shared library.
              SHARED
@@ -50,7 +51,7 @@ find_library( # Sets the name of the path variable.
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
-                       mp3recorder-lib
+                       mp3recorder
 
                        mp3lame
 
