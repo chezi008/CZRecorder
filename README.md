@@ -1,5 +1,5 @@
-## AndroidMp3Recorder
-[![](https://jitpack.io/v/chezi008/AndroidMp3Recorder.svg)](https://jitpack.io/#chezi008/AndroidMp3Recorder)
+## CZRecorder
+[![](https://jitpack.io/v/chezi008/CZRecorder.svg)](https://jitpack.io/#chezi008/CZRecorder)
 ### 一、功能说明
 1、通过libmp3lame库将PCM转成MP3的音频格式。
 2、添加一个自定义的录音控件。
@@ -147,10 +147,13 @@ repositories {
 ```
 Next add a dependency in the build.gradle file of your app module. The following will add a dependency to the full library:
 ```
-implementation 'com.github.chezi008:AndroidMp3Recorder:v1.0.4'
+	dependencies {
+	        implementation 'com.github.chezi008:CZRecorder:1.0.9'
+	}
+
 ```
 
-### github:  https://github.com/chezi008/AndroidMp3Recorder
+### github:  https://github.com/chezi008/CZRecorder
 ### [参考]
 1. 编译libmp3lame库:   http://www.cnblogs.com/ct2011/p/4080193.html
 2. 自定义圆形录制控件的动画参考：不记得了
