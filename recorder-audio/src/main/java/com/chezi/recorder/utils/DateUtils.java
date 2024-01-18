@@ -7,7 +7,7 @@ import android.annotation.SuppressLint;
  * @description ：
  * @email ：chezi008@163.com
  */
-class DateUtils {
+public class DateUtils {
     @SuppressLint({"DefaultLocale"})
     public static String toTime(int var0) {
         var0 /= 1000;
