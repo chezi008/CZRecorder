@@ -110,7 +110,7 @@ public class SpectrumView extends View {
                         for (int j = 0; j < pointers.size(); j++) {
                             //利用正弦有规律的获取0~1的数。
                             float rate = (float) Math.abs(Math.sin(i + j));
-                            Log.d(TAG, "run: i:" + i);
+//                            Log.d(TAG, "run: i:" + i);
                             //rate 乘以 可绘制高度，来改变每个指针的高度
                             pointers.get(j).setHeight((basePointY - getPaddingTop()) * rate);
                         }

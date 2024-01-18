@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.chezi.recorder.IAudioRecorder;
@@ -15,9 +16,13 @@ import com.chezi.recorder.SpectrumView;
 import com.chezi.recorder.listener.AudioRecordListener;
 import com.chezi.recorder.RecorderView;
 import com.chezi.mp3recorddemo.R;
+import com.hjq.permissions.OnPermissionCallback;
+import com.hjq.permissions.Permission;
+import com.hjq.permissions.XXPermissions;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private String TAG = getClass().getSimpleName();
@@ -25,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     // Used to load the 'native-lib' library on application startup.
 
     private IAudioRecorder mRecorder;
-    private String filePath= Environment.getExternalStorageDirectory().getPath() + "/test.mp3";
+    private String filePath;
     private SpectrumView spectrum_view;
 
     private RecorderView mic_view;
@@ -34,7 +39,9 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        createFile();
+        filePath  = getFilesDir().getAbsolutePath()+ "/test.mp3";
+//        createFile();
+        requestPermission();
         mRecorder = new Mp3Recorder();
         mRecorder.setAudioListener(new AudioRecordListener() {
             @Override
@@ -89,6 +96,35 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, strFinish, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void requestPermission() {
+        XXPermissions.with(this)
+                // 申请单个权限
+                .permission(Permission.RECORD_AUDIO)
+                // 申请多个权限
+                // 设置权限请求拦截器（局部设置）
+                //.interceptor(new PermissionInterceptor())
+                // 设置不触发错误检测机制（局部设置）
+                //.unchecked()
+                .request(new OnPermissionCallback() {
+
+                    @Override
+                    public void onGranted(@NonNull List<String> permissions, boolean allGranted) {
+                        if (!allGranted) {
+                            return;
+                        }
+                    }
+
+                    @Override
+                    public void onDenied(@NonNull List<String> permissions, boolean doNotAskAgain) {
+                        if (doNotAskAgain) {
+                            // 如果是被永久拒绝就跳转到应用权限系统设置页面
+                            XXPermissions.startPermissionActivity(MainActivity.this, permissions);
+                        } else {
+                        }
+                    }
+                });
     }
 
     private void createFile() {

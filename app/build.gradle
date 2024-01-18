@@ -5,7 +5,7 @@ android {
     buildToolsVersion "30.0.0"
     defaultConfig {
         applicationId "com.chezi008.mp3recorddemo"
-        minSdkVersion 18
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -30,4 +30,7 @@ dependencies {
     implementation project(path: ':recorder-audio')
     //    implementation 'com.github.chezi008:AndroidMp3Recorder:v1.0.4'
 //    implementation project(path: ':lamemp3')
+
+    // 权限请求框架：https://github.com/getActivity/XXPermissions
+    implementation 'com.github.getActivity:XXPermissions:18.5'
 }
