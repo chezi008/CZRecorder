@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.module.mp3recorddemo">
+    package="com.chezi.mp3recorddemo">
     <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
     <application
@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.module.mp3recorder.MainActivity">
+        <activity android:name="com.chezi.mp3recorder.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
